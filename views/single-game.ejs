@@ -1,0 +1,64 @@
+<body class="background-image"></body>
+<!-- details page -->
+<section class="pt-6">
+    <div class="container shadow section-sm rounded">
+        <div class="columns is-multiline">
+            <!-- sidebar -->
+            <div class="column is-3-desktop is-12-tablet">
+                <ul class="sidenav">
+                    <li title="Basic Startup" class="sidelist parent active">
+                        <h3 href="/">Wishlist</h3>
+                        <ul>
+                            <% for(let i in steam) { %>
+                            <% let game = steam[i]; %>
+                            <li class="sidelist">
+                                <a href="/wishlist/<%= game.name %>"><%= game.name %></a>
+                                <% } %>
+                            </li>
+
+                        </ul>
+                    </li>
+            </div>
+            <div class="column is-8-desktop is-12-tablet">
+                <div class="px-4">
+                    <h2 class="mb-4 has-text-weight-medium"><%= game.name %></h2>
+                    <div class="content">
+                        <!--Review Score/Description-->
+                        <h6>Score: <%= game.review_desc %></h6>
+                        <hr>
+                        <h6>Release Date: <%= game.release_string %></h6>
+                        <hr>
+                        <ul>
+                            <h6>Genres: </h6>
+                            <% for( let i = 0; i < game.tags.length; i++ ) { %>
+                            <% let tag = game.tags[i] %>
+                            <%= tag %>,
+                            <% } %>
+                        </ul>
+                        <hr>
+                        <% if(game.is_free_game === true) { %>
+                        <h6>Is it a free game? Yes</h6>
+                        <% } else {%>
+                        <h6>Is it a free game? No</h6>
+                        <% } %>
+                        <hr>
+                        <% if (game.deck_compat === 0) { %>
+                        <h6>Steam Deck Compatible: Unknown/Unreleased</h6>
+                        <% } else if (game.deck_compat === '1') { %>
+                        <h6>Steam Deck Compatible: Unsupported</h6>
+                        <% } else if (game.deck_compat === '2') { %>
+                        <h6>Steam Deck Compatible: Playable</h6>
+                        <% } else if (game.deck_compat === '3') { %>
+                        <h6>Steam Deck Compatible: Verified</h6>
+                        <% } %>
+                        <!--0 = Unknown, 1 = Unsupported, 2 = Playable, 3 = Verified-->
+                        <hr>
+                        <h2>Prices:</h2>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+<!-- /details page -->
+</body>
