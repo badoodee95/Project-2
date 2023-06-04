@@ -8,6 +8,7 @@ const passport = require('./config/ppConfig');
 const isLoggedIn = require('./middleware/isLoggedIn');
 const axios = require('axios');
 let steamID;
+let appID;
 
 // environment variables
 SECRET_SESSION = process.env.SECRET_SESSION;
@@ -15,6 +16,7 @@ const steamApiKey = process.env.STEAM_API_KEY;
 const dealApiKey = process.env.ISTHEREANYDEAL_API_KEY;
 const dealOAuthKey = process.env.ISTHEREANYDEAL_OAUTH_CLIENT;
 const dealSecretKey = process.env.ISTHEREANYDEAL_SECRET_CLIENT;
+const officialSteamApiKey = process.OFFICIAL_STEAM_API_KEY;
 // console.log('>>>>>>>>>>>>', SECRET_SESSION);
 
 app.set('view engine', 'ejs');
@@ -109,12 +111,9 @@ app.get('/wishlist/search', function (req, res) {
 // });
 
 app.get('/test', function (req, res) {
-  axios.get('https://api.isthereanydeal.com/v01/game/prices/?key=55b59e82abf91b9c2e16bb2b073d3527e4dd9e90&plains=darkwood&region=US&country=US&shops=steam%2Cindiegamestand%2Camazonus&exclude=voidu%2Citchio&added=0')
+  axios.get('https://api.isthereanydeal.com/v01/game/overview/?key=55b59e82abf91b9c2e16bb2b073d3527e4dd9e90&region=us&country=US&plains=&shop=steam&ids=app%2F460930%2Csub%2F37125%2Cbundle%2F7078&allowed=&optional=')
     .then(function (response) {
       console.log('whatever-1', response.data.data);
-      console.log('whatever-2', response.data.data.darkwood.list);
-      console.log('whatever-3', response.data.data.darkwood.list[0].price_new);
-      let price_new = response.data.data.darkwood.list[0].price_new;
       // for (let i in response) {
       //   for (let i in data) {
       //     for (let i in darkwood) {
@@ -137,42 +136,60 @@ app.get('/test', function (req, res) {
 app.get('/wishlist/:name', function (req, res) {
   const steamWishlistURL = 'https://store.steampowered.com/wishlist/profiles/' + steamID + '/wishlistdata/?p=0';
   const dealsListURL = `https://api.isthereanydeal.com/v01/deals/list/?key=${dealApiKey}&offset=0&limit=200&region=US&country=US&shops=steam%2Cgog`;
-  const dealsPriceURL =
+  const steamGameURL = 'http://store.steampowered.com/api/appdetails?appids=' + appID;
+  axios.all([
+    axios.get(steamWishlistURL),
+    axios.get(dealsListURL),
+  ])
+    .then(axios.spread(async function (steamResponse, dealsResponse) {
+      let found = false;
+      for (let i in steamResponse.data) {
+        let game = steamResponse.data[i];
+        appID = i.toString();
+        const steamGameStorePage = 'https://store.steampowered.com/app/' + appID;
+        console.log('gameid', appID); // THIS GIVES ME BACK THE APP/GAME ID DONT FORGET THIS !!!
+        if (game.name === req.params.name) {
+          found = true;
+          await axios.get('http://store.steampowered.com/api/appdetails?appids=' + appID.toString())
+            .then(function (steamStoreResponse) {
+              console.log('alsdfj;alsdjf;la', steamStoreResponse.data[appID].data);
+              console.log('?????? or some shit', steamStoreResponse.data[appID].data.price_overview);
+              let initialPrice;
+              let finalPrice;
+              let discountPercent;
 
-
-    axios.all([
-      axios.get(steamWishlistURL),
-      axios.get(dealsListURL)
-    ])
-      .then(axios.spread(function (steamResponse, dealsResponse) {
-        let found = false;
-        for (let i in steamResponse.data) {
-          let game = steamResponse.data[i];
-          if (game.name === req.params.name) {
-            console.log('deals data', dealsResponse.data);
-            found = true;
-            axios.get('https://api.isthereanydeal.com/v01/game/prices/?key=55b59e82abf91b9c2e16bb2b073d3527e4dd9e90&plains=' + game.name + '&region=US&country=US&shops=steam%2Cindiegamestand%2Camazonus&exclude=voidu%2Citchio&added=0')
-              .then(function (response) {
-                console.log('whatever-1', response.data.data);
-                console.log('whatever-2', response.data.data.darkwood.list);
-                console.log('whatever-3', response.data.data.darkwood.list[0].price_new);
-                let price_new = response.data.data.darkwood.list[0].price_new;
-                return res.render('single-game', { game: steamResponse.data[i], steam: steamResponse.data, deals: dealsResponse.data });
-              })
-              .catch(function (error) {
-                res.json({ message: 'Data not found. Please try again later.' });
-              });
-
-
-          }
+              if (!steamStoreResponse.data[appID].data.price_overview) {
+                initialPrice = 'Free';
+              } else {
+                initialPrice = steamStoreResponse.data[appID].data.price_overview.initial_formatted;
+              }
+              if (!steamStoreResponse.data[appID].data.price_overview) {
+                finalPrice = 'Free';
+              } else {
+                finalPrice = steamStoreResponse.data[appID].data.price_overview.final_formatted;
+              }
+              if (!steamStoreResponse.data[appID].data.price_overview) {
+                discountPercent = 'Free';
+              } else {
+                discountPercent = steamStoreResponse.data[appID].data.price_overview.discount_percent;
+              }
+              // console.log('steam store data', steamStoreResponse.data);
+              // console.log('l;akfjdflajsl;kjfalksdj', steamStoreResponse.data[appID].data.price_overview);
+              // console.log('initial Price', initialPrice);
+              return res.render('single-game', { game: steamResponse.data[i], steam: steamResponse.data, appID, deals: dealsResponse.data, initialPrice, finalPrice, discountPercent, steamGameStorePage });
+            });
+          // .then(function (response) {
+          //   return res.render('single-game', { game: steamResponse.data[i], steam: steamResponse.data, appID, deals: dealsResponse.data, initialPrice, finalPrice, discountPercent, steamGameStorePage });
+          // });
         }
-        if (!found) {
-          res.json({ data: 'Game is not currently on your wishlist.' });
-        }
-      }))
-      .catch(function (error) {
-        res.json({ message: 'Data not found. Please try again later.' });
-      });
+      }
+      if (!found) {
+        res.json({ data: 'Game is not currently on your wishlist.' });
+      }
+    }))
+    .catch(function (error) {
+      res.json({ message: 'Data not found. Please try again later.' });
+    });
 });
 
 
@@ -183,7 +200,7 @@ app.post('/wishlist', function (req, res) {
   axios.get('https://store.steampowered.com/wishlist/profiles/' + steamID + '/wishlistdata/?p=0')
     .then(function (response) {
       let result = [];
-      console.log('games list', response.data);
+      // console.log('games list', response.data);
       for (let i in response.data) {
         let obj = response.data[i];
         result.push(obj.name);
