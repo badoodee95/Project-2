@@ -7,6 +7,7 @@ const flash = require('connect-flash');
 const passport = require('./config/ppConfig');
 const isLoggedIn = require('./middleware/isLoggedIn');
 const axios = require('axios');
+const db = require('./models');
 let steamID;
 let appID;
 
@@ -212,6 +213,29 @@ app.post('/wishlist', function (req, res) {
     });
 });
 
+app.put('/edit/:id', function (req, res) {
+  // find the capsule, and then go edit page
+  console.log('form data', req.body);
+
+  const parsed_capsule = { ...req.body };
+  // change datatype for reuse_count and water_landings
+  parsed_capsule.reuse_count = parseInt(req.body.reuse_count);
+  parsed_capsule.water_landings = parseInt(req.body.water_landings);
+  console.log('parsed_capsule: ', parsed_capsule);
+
+  capsule.update(parsed_capsule, {
+    where: { id: parseInt(req.params.id) }
+  })
+    .then(numOfRowsChanged => {
+      console.log('how many rows get updated?', numOfRowsChanged);
+      res.redirect(`/capsules/${parseInt(req.params.id)}`);
+    })
+    .catch(err => console.log('Error', err));
+});
+
+
+
+
 
 
 app.use('/auth', require('./controllers/auth'));
@@ -233,5 +257,6 @@ module.exports = {
   server,
   app,
   PORT,
-  axios
+  axios,
+  steamID
 };
