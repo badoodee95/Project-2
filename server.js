@@ -7,7 +7,8 @@ const flash = require('connect-flash');
 const passport = require('./config/ppConfig');
 const isLoggedIn = require('./middleware/isLoggedIn');
 const axios = require('axios');
-const db = require('./models');
+const { game, index, user } = require('./models');
+const router = express.Router();
 let steamID;
 let appID;
 
@@ -47,47 +48,71 @@ app.use((req, res, next) => {
 });
 
 
+// app.use('/wishlist', require('./controllers/wishlist'));
+
 app.get('/', (req, res) => {
   res.render('index');
 });
 
 app.get('/wishlist', (req, res) => {
-  res.render('wishlist');
+  game.findAll()
+    .then(games => {
+      console.log('raw data', games);
+      // clean capsules
+      const cleaned_game = games.map(c => c.toJSON());
+      console.log('cleaned game', cleaned_game);
+      // return a webpage
+      res.render('wishlist', { game: cleaned_game });
+    })
+    .catch(err => {
+      console.log('Error', err);
+      res.render('no result');
+    });
+  // res.render('wishlist');
 });
 
 app.get('/data'), (req, res) => {
   res.render('data');
 };
 
-app.get('/wishlist/search', function (req, res) {
-  res.render('wishlist/search');
+
+app.get('/wishlist/search', function (req, res) { // this is the get route
+  res.render('search.ejs'); // this is the page that I want to render
 });
 
-// app.get('/steam', function (req, res) {
-//   axios.get('https://api.steamapis.com/steam/profile/76561199475352311?api_key=' + apiKey)
-//     .then(function (response) {
-//       return res.json({ steam: response.data });
-//     })
-//     .catch(function (error) {
-//       return res.json({ message: 'Data not found. Please try again later.' });
-//     });
-// });
+app.get('/wishlist/new', function (req, res) {
+  res.render('wishlist/new.ejs');
+});
 
-// app.get('/data', function (req, res) {
-//   axios.get('https://store.steampowered.com/wishlist/profiles/76561198187182533/wishlistdata/?p=0')
-//     .then(function (response) {
-//       let result = [];
+app.get('/wishlist/edit/:name', function (req, res) {
+  res.render('wishlist/edit.ejs');
+});
 
-//       for (let i in response.data) {
-//         let obj = response.data[i];
-//         result.push(obj.name);
-//       }
-//       return res.json({ steam: result });
-//     })
-//     .catch(function (error) {
-//       return res.json({ message: 'Data not found. Please try again later.' });
-//     });
-// });
+app.get('/steam', function (req, res) {
+  axios.get('https://api.steamapis.com/steam/profile/76561199475352311?api_key=' + apiKey)
+    .then(function (response) {
+      return res.json({ steam: response.data });
+    })
+    .catch(function (error) {
+      return res.json({ message: 'Data not found. Please try again later.' });
+    });
+});
+
+app.get('/data', function (req, res) {
+  axios.get('https://store.steampowered.com/wishlist/profiles/76561198187182533/wishlistdata/?p=0')
+    .then(function (response) {
+      let result = [];
+
+      for (let i in response.data) {
+        let obj = response.data[i];
+        result.push(obj.name);
+      }
+      return res.json({ steam: result });
+    })
+    .catch(function (error) {
+      return res.json({ message: 'Data not found. Please try again later.' });
+    });
+});
 
 
 // // this will render a page with each game individually
@@ -133,6 +158,13 @@ app.get('/test', function (req, res) {
       res.json({ message: 'Data not found. Please try again later.' });
     });
 });
+
+// app.get('/wishlist/edit/:name', function (req, res) {
+//   game.findOne({
+//     where: { name: req.params.name }
+//   });
+//   return res.render('wishlist/edit');
+// });
 
 app.get('/wishlist/:name', function (req, res) {
   const steamWishlistURL = 'https://store.steampowered.com/wishlist/profiles/' + steamID + '/wishlistdata/?p=0';
@@ -193,6 +225,39 @@ app.get('/wishlist/:name', function (req, res) {
     });
 });
 
+// app.get('/wishlist/edit/:name', function (req, res) {
+//   game.findOne({
+//     where: { name: req.params.name }
+//   });
+//   return res.render('wishlist/edit');
+// });
+
+app.put('wishlist/edit/name', function (req, res) {
+  // find the capsule, and then go edit page
+  console.log('form data', req.body);
+  let result = [];
+  for (let i in response.data) {
+    let obj = response.data[i];
+    result.push(obj.name);
+  }
+  const parsed_game = { ...req.body };
+  if (parsed_game.is_free_game === 'false') {
+    parsed_game.is_free_game = false;
+  } else if (parsed_game.is_free_game === 'true') {
+    parsed_game.is_free_game = true;
+  }
+  // change datatype for reuse_count and water_landings
+  console.log('parsed_game: ', parsed_game);
+
+  game.update(parsed_game, {
+    where: { steam: result }
+  })
+    .then(numOfRowsChanged => {
+      console.log('how many rows got updated?', numOfRowsChanged);
+      res.redirect(`/capsules/${parseInt(req.params.id)}`);
+    })
+    .catch(err => console.log('Error', err));
+});
 
 
 app.post('/wishlist', function (req, res) {
@@ -206,33 +271,41 @@ app.post('/wishlist', function (req, res) {
         let obj = response.data[i];
         result.push(obj.name);
       }
-      return res.render('wishlist', { steam: result });
+      res.render('wishlist', { steam: result, steamResponse: response.data });
     })
     .catch(function (error) {
       res.json({ message: 'Data not found. Please try again later.' });
     });
 });
 
-app.put('/edit/:id', function (req, res) {
-  // find the capsule, and then go edit page
-  console.log('form data', req.body);
-
-  const parsed_capsule = { ...req.body };
-  // change datatype for reuse_count and water_landings
-  parsed_capsule.reuse_count = parseInt(req.body.reuse_count);
-  parsed_capsule.water_landings = parseInt(req.body.water_landings);
-  console.log('parsed_capsule: ', parsed_capsule);
-
-  capsule.update(parsed_capsule, {
-    where: { id: parseInt(req.params.id) }
-  })
-    .then(numOfRowsChanged => {
-      console.log('how many rows get updated?', numOfRowsChanged);
-      res.redirect(`/capsules/${parseInt(req.params.id)}`);
-    })
-    .catch(err => console.log('Error', err));
+app.post('/wishlist/new', function (req, res) {
+  // console.log('form data', req.body);
+  axios.get('https://store.steampowered.com/wishlist/profiles/' + steamID + '/wishlistdata/?p=0')
+    .then(function (response) {
+      let result = [];
+      for (let i in response.data) {
+        let obj = response.data[i];
+        result.push(obj.name);
+      }
+      const parsed_game = { ...req.body };
+      if (parsed_game.is_free_game === 'false') {
+        parsed_game.is_free_game = false;
+      } else if (parsed_game.is_free_game === 'true') {
+        parsed_game.is_free_game = true;
+      }
+      // console.log('parsed game', parsed_game);
+      game.create(parsed_game)
+        .then(createdGame => {
+          console.log('game created', createdGame.toJSON());
+          res.render('wishlist', { steam: result });
+          // res.redirect('/wishlist');
+        })
+        .catch(function (error) {
+          console.log('error', error);
+          // res.render('no-result');
+        });
+    });
 });
-
 
 
 
@@ -258,5 +331,9 @@ module.exports = {
   app,
   PORT,
   axios,
-  steamID
+  steamID,
+  appID
 };
+
+
+// Induces
