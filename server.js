@@ -6,6 +6,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('./config/ppConfig');
 const isLoggedIn = require('./middleware/isLoggedIn');
+const methodOverride = require('method-override');
 const axios = require('axios');
 const { game, index, user } = require('./models');
 const router = express.Router();
@@ -26,6 +27,7 @@ app.set('view engine', 'ejs');
 app.use(require('morgan')('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/public'));
+app.use(methodOverride('_method'));
 app.use(layouts);
 
 app.use(flash());            // flash middleware
@@ -99,50 +101,31 @@ app.get('/wishlist/edit/:name', function (req, res) {
 });
 
 app.get('/games', function (req, res) {
-  axios.get('https://store.steampowered.com/wishlist/profiles/76561198388597357/wishlistdata/?p=0')
-    .then(function (response) {
-      let newTags = [];
-      for (let i in response.data) {
-        let obj = response.data[i];
-        newTags = Object.values(obj.tags).toString().split(',').join(', ');
-        game.findOrCreate({
-          where: {
-            name: obj.name,
-            review_desc: obj.review_desc,
-            release_string: obj.release_string,
-            tags: newTags,
-            is_free_game: obj.is_free_game,
-            background: obj.background,
-            deck_compat: obj.deck_compat,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
-        }).then(([game, created]) => {
-
-          console.log('game', game);
-        });
-      }
-      // let result = [];
-      // for (let i in response.data) {
-      //   let obj = response.data[i];
-      //   // console.log('obj', obj);
-      //   result.push(obj);
-      // }
-      // console.log('response.data', result);
+  game.findAll()
+    .then(games => {
+      console.log('raw data', games);
+      const cleaned_games = games.map(c => c.toJSON());
+      console.log('cleaned capsules', cleaned_games);
+      res.render('games', { games: cleaned_games });
+    })
+    .catch(err => {
+      console.log('Error', err);
+      res.render('no result');
     });
-  // game.findOrCreate({
-  //   name: game.name,
-  //   review_desc: game.review_desc,
-  //   release_string: game.release_string,
-  //   tags: newTags,
-  //   is_free_game: game.is_free_game,
-  //   background: game.background,
-  //   deck_compat: game.deck_compat,
-  //   createdAt: new Date().toISOString(),
-  //   updatedAt: new Date().toISOString()
-  // });
+});
 
-  res.render('games', {});
+app.get('/games/:id', function (req, res) {
+  console.log('id', req.params.id);
+  game.findOne({
+    where: { id: parseInt(req.params.id) }
+  }).then(foundGame => {
+    console.log('found game', foundGame);
+    res.render('single-game(info)', { game: foundGame });
+  })
+    .catch(function (error) {
+      console.log('error', error);
+      res.render('no-result');
+    });
 });
 
 // app.get('/steam', function (req, res) {
@@ -266,7 +249,7 @@ app.get('/wishlist/:name', function (req, res) {
               // console.log('steam store data', steamStoreResponse.data);
               // console.log('l;akfjdflajsl;kjfalksdj', steamStoreResponse.data[appID].data.price_overview);
               // console.log('initial Price', initialPrice);
-              return res.render('single-game', { game: steamResponse.data[i], steam: steamResponse.data, appID, deals: dealsResponse.data, initialPrice, finalPrice, discountPercent, steamGameStorePage });
+              return res.render('single-game(wishlist)', { game: steamResponse.data[i], steam: steamResponse.data, appID, deals: dealsResponse.data, initialPrice, finalPrice, discountPercent, steamGameStorePage });
             });
           // .then(function (response) {
           //   return res.render('single-game', { game: steamResponse.data[i], steam: steamResponse.data, appID, deals: dealsResponse.data, initialPrice, finalPrice, discountPercent, steamGameStorePage });
@@ -433,14 +416,27 @@ app.post('/wishlist/newgame', function (req, res) {
     });
 });
 
-app.delete('/wishlist/:name', function (req, res) {
+// app.delete('/wishlist/:name', function (req, res) {
+//   game.destroy({
+//     where: { name: req.params.name }
+//   })
+//     .then(numOfRowsDeleted => {
+//       console.log('How many rows were deleted?', numOfRowsDeleted);
+//       res.redirect('/wishlist');
+//     })
+//     .catch(err => {
+//       console.log('Error', err);
+//       res.render('no-result');
+//     });
+// });
+
+app.delete('/games/:id', function (req, res) {
   game.destroy({
-    where: { name: req.params.name }
+    where: { id: parseInt(req.params.id) }
   })
     .then(numOfRowsDeleted => {
       console.log('How many rows were deleted?', numOfRowsDeleted);
-      // redirect the user back to all members page /members
-      res.redirect('/wishlist');
+      res.redirect('/games');
     })
     .catch(err => {
       console.log('Error', err);
