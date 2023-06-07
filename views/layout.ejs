@@ -1,92 +1,146 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 
-<!--
+  <!--
  // WEBSITE: https://themefisher.com
  // TWITTER: https://twitter.com/themefisher
  // FACEBOOK: https://www.facebook.com/themefisher
  // GITHUB: https://github.com/themefisher/
 -->
 
-<html lang="zxx">
+  <html lang="zxx">
 
-<head>
-  <meta charset="utf-8">
-  <title>Steam Wishlist Price Comaparison</title>
+  <head>
+    <meta charset="utf-8">
+    <title>Project 2</title>
 
-  <!-- mobile responsive meta -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- mobile responsive meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <!-- theme meta -->
-  <meta name="theme-name" content="godocs-bulma" />
+    <!-- theme meta -->
+    <meta name="theme-name" content="kross-bulma" />
 
-  <!-- ** Plugins Needed for the Project ** -->
-  <!-- plugins -->
-  <link rel="stylesheet" href="/plugins/bulma/bulma.min.css">
-  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"> -->
-  <link rel="stylesheet" href="/plugins/themify-icons/themify-icons.css">
-  <!-- <link rel="stylesheet" href="bower_components/themify-icons/themify-icons.css" /> -->
-  <!-- Main Stylesheet -->
-  <link href="/css/style.css" rel="stylesheet">
+    <!-- ** Plugins Needed for the Project ** -->
+    <!-- bulma -->
+    <link rel="stylesheet" href="/plugins/bulma/bulma.min.css">
+    <!-- slick slider -->
+    <link rel="stylesheet" href="/plugins/slick/slick.css">
+    <!-- themefy-icon -->
+    <link rel="stylesheet" href="/plugins/themify-icons/themify-icons.css">
 
-  <link href="" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link href="/css/style.css" rel="stylesheet">
 
-  <!--Favicon-->
-  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
-  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <!--Favicon-->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 
-</head>
+  </head>
 
-<body>
-  <nav class="navbar is-sticky-top navigation" role="navigation" aria-label="main navigation">
-    <div class="container">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-          <img class="img-fluid" src="/images/SpaceX-Logo.png" alt="godocs" width="155px">
-        </a>
-
-        <a role="button" class="navbar-burger burger" aria-expanded="false" data-target="navbar-links">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-    </div>
-  </nav>
+  <body>
 
 
-  <%- body %>
+    <header>
+      <nav class="navbar is-black is-fixed-top" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="">
+            <img
+              src="https://s3.amazonaws.com/prod-media.gameinformer.com/styles/body_default/s3/legacy-images/imagefeed/Over%207600%20Games%20Were%20Released%20On%20Steam%20In%202017/steamlogo610.jpg"
+              width="112" height="28">
+          </a>
 
-
-
-  <footer>
-    <div class="container">
-      <div class="columns is-multiline is-align-items-center border-bottom py-5">
-        <div class="column is-4-desktop is-12-tablet">
-        </div>
-        <div class="column is-4-desktop is-12-tablet">
-          <a class="navbar-brand is-justify-content-center" href="/">
-            <img class="img-fluid" src="/images/SpaceX-Logo.png" alt="Hugo documentation theme">
+          <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+            data-target="navigation">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
           </a>
         </div>
-        <div class="column is-4-desktop is-12-tablet">
+
+        <div id="navigation" class="navbar-menu is-flex is-justify-content-center">
+          <div class="navbar-brand">
+            <% if (!currentUser) {%>
+            <a class="navbar-item" href="/auth/signup">Signup</a>
+            <a class="navbar-item" href="/auth/login">Login</a>
+            <% } else { %>
+            <a href="/" class="navbar-item">Home</a>
+            <a class="navbar-item" href="/auth/logout">Logout</a>
+            <a class="navbar-item" href="/profile">Profile</a>
+            <a href="/wishlist" class="navbar-item">Wishlist</a>
+            <% } %>
+            <!-- <a href="/" class="navbar-item">Home</a>
+            <a href="/wishlist/search" class="navbar-item">Search</a>
+            <a href="/profile" class="navbar-item">Profile</a> -->
+          </div>
+        </div>
+      </nav>
+    </header>
+
+
+    <%- body %>
+
+
+
+
+
+    <!-- footer
+    <footer class="has-background-dark footer-section">
+      <div class="section">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-4-tablet">
+              <h5 class="has-text-light">Email</h5>
+              <p class="has-text-white paragraph-lg font-secondary">steve.fruits@email.com</p>
+            </div>
+            <div class="column is-4-tablet">
+              <h5 class="has-text-light">Phone</h5>
+              <p class="has-text-white paragraph-lg font-secondary">+880 2544 658 256</p>
+            </div>
+            <div class="column is-4-tablet">
+              <h5 class="has-text-light">Address</h5>
+              <p class="has-text-white paragraph-lg font-secondary">125/A, CA Commercial Area, California, USA</p>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="py-4 has-text-centered">
-        <small class="text-light">Copyright © 2023 - Design &amp; Developed by <a
-            href="https://github.com/badoodee95">themefisher</a></small>
+      <div class="section is-small has-text-centered has-border-top is-border-dark">
       </div>
+    </footer> -->
+    <!-- <footer class="has-background-dark footer-section marsupial">
+      <div class="section">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-4-tablet">
+
+            </div>
+            <div class="column is-4-tablet">
+
+            </div>
+            <div class="column is-4-tablet">
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="section is-small has-text-centered is-border-dark has-background-dark"> -->
+    <!-- <p class="has-text-light">Copyright ©
+          <script>
+            var CurrentYear = new Date().getFullYear();
+            document.write(CurrentYear)
+          </script> a theme by <a href="themefisher.com">themefisher.com</a>
+        </p> -->
     </div>
-  </footer>
+    </footer>
+    <!-- /footer -->
 
-  <!-- plugins -->
-  <script src="plugins/jQuery/jquery.min.js"></script>
-  <script src="plugins/masonry/masonry.min.js"></script>
-  <script src="plugins/clipboard/clipboard.min.js"></script>
-  <script src="plugins/match-height/jquery.matchHeight-min.js"></script>
+    <!-- plugins -->
+    <script src="plugins/jQuery/jquery.min.js"></script>
+    <script src="plugins/masonry/masonry.min.js"></script>
+    <script src="plugins/clipboard/clipboard.min.js"></script>
+    <script src="plugins/match-height/jquery.matchHeight-min.js"></script>
 
-  <!-- Main Script -->
-  <script src="js/script.js"></script>
+    <!-- Main Script -->
+    <script src="js/script.js"></script>
 
-</body>
+  </body>
 
-</html>
+  </html>

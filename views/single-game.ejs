@@ -59,13 +59,14 @@
                         <hr>
                         <p>Discount: <%= discountPercent %></p>
                         <hr>
-                        <p>Initial Price: <%=   initialPrice %></p>
+                        <p>Initial Price: <%=  initialPrice %></p>
                         <hr>
-                        <a href="<%= steamGameStorePage %>">Store Page</a>
+                        <a class="has-text-white" href="<%= steamGameStorePage %>">Store Page</a>
+                        <hr>
 
-                        <div class="buttons">
-                            <a class="button is-success" href="/wishlist/edit/<%= game.name %>">Edit</a>
-                            <form method="POST" action="/wishlist/<%= game.name %>/?_method=DELETE">
+                        <div class="buttons container m-0">
+                            <a class="button is-warning has-text-grey" href="/wishlist/edit/<%= game.name %>">Edit</a>
+                            <form class="m-0" method="POST" action="/wishlist/<%= game.name %>/?_method=DELETE">
                                 <input class="button is-danger" type="submit" value="Delete">
                             </form>
 

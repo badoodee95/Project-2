@@ -44,6 +44,7 @@ app.use((req, res, next) => {
   // console.log(res.locals);
   res.locals.alerts = req.flash();
   res.locals.currentUser = req.user;
+  res.locals.steamID = steamID;
   next();
 });
 
@@ -55,19 +56,24 @@ app.get('/', (req, res) => {
 });
 
 app.get('/wishlist', (req, res) => {
-  game.findAll()
-    .then(games => {
-      console.log('raw data', games);
-      // clean capsules
-      const cleaned_game = games.map(c => c.toJSON());
-      console.log('cleaned game', cleaned_game);
-      // return a webpage
-      res.render('wishlist', { game: cleaned_game });
-    })
-    .catch(err => {
-      console.log('Error', err);
-      res.render('no result');
-    });
+  if (user.steamID) {
+    game.findAll()
+      .then(games => {
+        console.log('raw data', games);
+        // clean capsules
+        const cleaned_game = games.map(c => c.toJSON());
+        console.log('cleaned game', cleaned_game);
+        // return a webpage
+        res.render('wishlist', { steam: cleaned_game });
+      })
+      .catch(err => {
+        console.log('Error', err);
+        res.render('no result');
+      });
+  } else {
+    res.render('search');
+  }
+
   // res.render('wishlist');
 });
 
@@ -75,8 +81,12 @@ app.get('/data'), (req, res) => {
   res.render('data');
 };
 
+app.get('/profile', isLoggedIn, function (req, res) {
+  const user = req.user;
+  res.render('profile', { user });
+});
 
-app.get('/wishlist/search', function (req, res) { // this is the get route
+app.get('/wishlist/search', isLoggedIn, function (req, res) { // this is the get route
   res.render('search.ejs'); // this is the page that I want to render
 });
 
@@ -88,31 +98,31 @@ app.get('/wishlist/edit/:name', function (req, res) {
   res.render('wishlist/edit.ejs');
 });
 
-app.get('/steam', function (req, res) {
-  axios.get('https://api.steamapis.com/steam/profile/76561199475352311?api_key=' + apiKey)
-    .then(function (response) {
-      return res.json({ steam: response.data });
-    })
-    .catch(function (error) {
-      return res.json({ message: 'Data not found. Please try again later.' });
-    });
-});
+// app.get('/steam', function (req, res) {
+//   axios.get('https://api.steamapis.com/steam/profile/76561199475352311?api_key=' + apiKey)
+//     .then(function (response) {
+//       return res.json({ steam: response.data });
+//     })
+//     .catch(function (error) {
+//       return res.json({ message: 'Data not found. Please try again later.' });
+//     });
+// });
 
-app.get('/data', function (req, res) {
-  axios.get('https://store.steampowered.com/wishlist/profiles/76561198187182533/wishlistdata/?p=0')
-    .then(function (response) {
-      let result = [];
+// app.get('/data', function (req, res) {
+//   axios.get('https://store.steampowered.com/wishlist/profiles/76561198187182533/wishlistdata/?p=0')
+//     .then(function (response) {
+//       let result = [];
 
-      for (let i in response.data) {
-        let obj = response.data[i];
-        result.push(obj.name);
-      }
-      return res.json({ steam: result });
-    })
-    .catch(function (error) {
-      return res.json({ message: 'Data not found. Please try again later.' });
-    });
-});
+//       for (let i in response.data) {
+//         let obj = response.data[i];
+//         result.push(obj.name);
+//       }
+//       return res.json({ steam: result });
+//     })
+//     .catch(function (error) {
+//       return res.json({ message: 'Data not found. Please try again later.' });
+//     });
+// });
 
 
 // // this will render a page with each game individually
@@ -136,28 +146,28 @@ app.get('/data', function (req, res) {
 //     });
 // });
 
-app.get('/test', function (req, res) {
-  axios.get('https://api.isthereanydeal.com/v01/game/overview/?key=55b59e82abf91b9c2e16bb2b073d3527e4dd9e90&region=us&country=US&plains=&shop=steam&ids=app%2F460930%2Csub%2F37125%2Cbundle%2F7078&allowed=&optional=')
-    .then(function (response) {
-      console.log('whatever-1', response.data.data);
-      // for (let i in response) {
-      //   for (let i in data) {
-      //     for (let i in darkwood) {
-      //       for (let i = 0; i < response.data.darkwood.list.length; i++) {
-      //         let listObject = response.data.dark.list[i];
-      //         let price_new = listObject[0].price_new;
-      //         console.log('new price', price_new);
-      //       }
-      //     }
-      //   }
-      // }
+// app.get('/test', function (req, res) {
+//   axios.get('https://api.isthereanydeal.com/v01/game/overview/?key=55b59e82abf91b9c2e16bb2b073d3527e4dd9e90&region=us&country=US&plains=&shop=steam&ids=app%2F460930%2Csub%2F37125%2Cbundle%2F7078&allowed=&optional=')
+//     .then(function (response) {
+//       console.log('whatever-1', response.data.data);
+//       // for (let i in response) {
+//       //   for (let i in data) {
+//       //     for (let i in darkwood) {
+//       //       for (let i = 0; i < response.data.darkwood.list.length; i++) {
+//       //         let listObject = response.data.dark.list[i];
+//       //         let price_new = listObject[0].price_new;
+//       //         console.log('new price', price_new);
+//       //       }
+//       //     }
+//       //   }
+//       // }
 
-      res.json({ response: response.data });
-    })
-    .catch(function (error) {
-      res.json({ message: 'Data not found. Please try again later.' });
-    });
-});
+//       res.json({ response: response.data });
+//     })
+//     .catch(function (error) {
+//       res.json({ message: 'Data not found. Please try again later.' });
+//     });
+// });
 
 // app.get('/wishlist/edit/:name', function (req, res) {
 //   game.findOne({
@@ -185,8 +195,8 @@ app.get('/wishlist/:name', function (req, res) {
           found = true;
           await axios.get('http://store.steampowered.com/api/appdetails?appids=' + appID.toString())
             .then(function (steamStoreResponse) {
-              console.log('alsdfj;alsdjf;la', steamStoreResponse.data[appID].data);
-              console.log('?????? or some shit', steamStoreResponse.data[appID].data.price_overview);
+              // console.log('alsdfj;alsdjf;la', steamStoreResponse.data[appID].data);
+              // console.log('?????? or some shit', steamStoreResponse.data[appID].data.price_overview);
               let initialPrice;
               let finalPrice;
               let discountPercent;
@@ -232,7 +242,7 @@ app.get('/wishlist/:name', function (req, res) {
 //   return res.render('wishlist/edit');
 // });
 
-app.put('wishlist/edit/name', function (req, res) {
+app.put('wishlist/edit/:name', function (req, res) {
   // find the capsule, and then go edit page
   console.log('form data', req.body);
   let result = [];
@@ -260,27 +270,37 @@ app.put('wishlist/edit/name', function (req, res) {
 });
 
 
-app.post('/wishlist', function (req, res) {
+app.post('/wishlist', isLoggedIn, function (req, res) {
   steamID = req.body.item;
-  // console.log('req.body', req.body);
-  axios.get('https://store.steampowered.com/wishlist/profiles/' + steamID + '/wishlistdata/?p=0')
-    .then(function (response) {
-      let result = [];
-      // console.log('games list', response.data);
-      for (let i in response.data) {
-        let obj = response.data[i];
-        result.push(obj.name);
-      }
-      res.render('wishlist', { steam: result, steamResponse: response.data });
-    })
-    .catch(function (error) {
-      res.json({ message: 'Data not found. Please try again later.' });
+  user.update({
+    steam_id: req.body.item
+  }, {
+    where: {
+      id: req.user.id
+    }
+  })
+    .then(result => {
+      // console.log('result', result);
+      res.json({ message: 'Hello or something idk...' });
     });
+  // axios.get('https://store.steampowered.com/wishlist/profiles/' + steamID + '/wishlistdata/?p=0')
+  //   .then(function (response) {
+  //     let result = [];
+  //     // console.log('games list', response.data);
+  //     for (let i in response.data) {
+  //       let obj = response.data[i];
+  //       result.push(obj.name);
+  //     }
+  //     res.render('wishlist', { steam: result, steamResponse: response.data });
 });
+// .catch(function (error) {
+//   res.json({ message: 'Data not found. Please try again later.' });
+// });
+// });
 
 app.post('/wishlist/new', function (req, res) {
   // console.log('form data', req.body);
-  axios.get('https://store.steampowered.com/wishlist/profiles/' + steamID + '/wishlistdata/?p=0')
+  axios.get('https://store.steampowered.com/wishlist/profiles/' + user.steam_id + '/wishlistdata/?p=0')
     .then(function (response) {
       let result = [];
       for (let i in response.data) {
@@ -293,19 +313,50 @@ app.post('/wishlist/new', function (req, res) {
       } else if (parsed_game.is_free_game === 'true') {
         parsed_game.is_free_game = true;
       }
+      game.create(parsed_game);
+      res.redirect('/wishlist');
       // console.log('parsed game', parsed_game);
-      game.create(parsed_game)
-        .then(createdGame => {
-          console.log('game created', createdGame.toJSON());
-          res.render('wishlist', { steam: result });
-          // res.redirect('/wishlist');
-        })
-        .catch(function (error) {
-          console.log('error', error);
-          // res.render('no-result');
-        });
+      // async function createGame() {
+      //   try {
+      //     const newGame = await db.game.create(parsed_game);
+      //     console.log('my new game >>>', newGame);
+      //     res.redirect('/wishlist');
+      //   } catch (error) {
+      //     // console.log(‘new game was not created b / c of >>>’, error);
+      //   }
+      // }
+    })
+    // game.create(parsed_game)
+    //   .then(createdGame => {
+    //     console.log('game created', createdGame.toJSON());
+    //     res.render('wishlist', { steam: result });
+    //     // res.redirect('/wishlist');
+    //   })
+    //   .catch(function (error) {
+    //     console.log('error', error);
+    //     // res.render('no-result');
+    //   });
+    // })
+    .catch(function (error) {
+      console.log('error', error);
     });
 });
+
+app.delete('/wishlist/:name', function (req, res) {
+  game.destroy({
+    where: { name: req.params.name }
+  })
+    .then(numOfRowsDeleted => {
+      console.log('How many rows were deleted?', numOfRowsDeleted);
+      // redirect the user back to all members page /members
+      res.redirect('/wishlist');
+    })
+    .catch(err => {
+      console.log('Error', err);
+      res.render('no-result');
+    });
+});
+
 
 
 

@@ -22,13 +22,13 @@ body {
   -webkit-font-smoothing: antialiased;
   font-size: 16px;
   line-height: 1.6;
-  color: #333;
+  color: #c7d5e0;
 }
 
 p,
 .paragraph {
   font-weight: 400;
-  color: #333;
+  color: #c7d5e0;
   font-size: 16px;
   line-height: 26px;
   font-family: "Montserrat", sans-serif;
@@ -41,7 +41,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: #222;
+  color: #c7d5e0;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
   line-height: 1.2;
@@ -103,6 +103,7 @@ h5,
 h6,
 .h6 {
   font-size: 18px;
+  color: #c7d5e0;
 }
 
 dt {
@@ -142,9 +143,9 @@ dd {
 }
 
 .btn-primary {
-  background: #FF0043;
-  color: #fff;
-  border-color: #FF0043;
+  background: white;
+  color: #1b2838;
+  border-color: #c7d5e0;
 }
 
 .btn-primary:active,
@@ -153,8 +154,8 @@ dd {
 .btn-primary.focus,
 .btn-primary.active {
   color: #fff;
-  background: #cc0036 !important;
-  border-color: #cc0036 !important;
+  background: #1b2838 !important;
+  border-color: #1b2838 !important;
 }
 
 .btn-outline-primary {
@@ -254,7 +255,7 @@ select:focus {
 }
 
 a:hover {
-  color: #FF0043;
+  color: #c7d5e0;
 }
 
 .slick-slide {
@@ -329,11 +330,11 @@ a:hover {
 }
 
 .text-primary {
-  color: #FF0043 !important;
+  color: #c7d5e0 !important;
 }
 
 .text-light {
-  color: #999 !important;
+  color: #c7d5e0 !important;
 }
 
 .mb-10 {
@@ -422,9 +423,7 @@ a:hover {
   margin-top: -15px;
 }
 
-.columns:last-child {
-  margin-bottom: -15px;
-}
+
 
 .list-inline {
   padding-left: 0;
@@ -536,13 +535,13 @@ a:hover {
 
 .navbar-item {
   text-transform: capitalize;
-  color: #222;
+  color: #c7d5e0;
 }
 
 .navbar-item:focus,
 .navbar-item:hover {
   background-color: transparent !important;
-  color: #FF0043 !important;
+  color: #c7d5e0 !important;
 }
 
 @media (max-width: 1023px) {
@@ -572,7 +571,7 @@ a:hover {
 }
 
 .navbar-burger {
-  color: #000;
+  color: #c7d5e0;
   height: 2.7rem;
   width: 2.7rem;
   border: 1px solid #ddd;
@@ -672,7 +671,7 @@ textarea {
 
 .card-icon {
   background: #FF0043;
-  color: #fff;
+  color: #c7d5e0f;
   height: 55px;
   width: 60px;
   line-height: 55px;
@@ -709,7 +708,7 @@ textarea {
   width: 42px;
   line-height: 42px;
   text-align: center;
-  color: #fff;
+  color: #c7d5e0;
   background: #FF0043;
   border-radius: 6px;
 }
@@ -757,7 +756,7 @@ textarea {
 }
 
 .sidenav .parent>a {
-  color: #FF0043 !important;
+  color: #c7d5e0 !important;
   position: relative;
   margin-left: 10px;
 }
@@ -781,7 +780,7 @@ textarea {
   padding: 5px 0;
   font-size: 14px;
   font-weight: 400;
-  color: #222;
+  color: #c7d5e0;
 }
 
 .sidenav .parent ul li.active>a {
@@ -813,7 +812,7 @@ textarea {
   display: inline-block;
   padding: 7px 0;
   font-size: 20px;
-  color: #222;
+  color: #c7d5e0;
 }
 
 .pagination {
@@ -822,7 +821,7 @@ textarea {
 }
 
 .pagination a {
-  color: #FF0043;
+  color: #c7d5e0;
   font-size: 18px;
   font-weight: 500;
 }
@@ -857,7 +856,7 @@ textarea {
 }
 
 .code-tabs .nav-tabs .nav-item.active {
-  background: #FF0043;
+  background: #c7d5e0;
 }
 
 .code-tabs .nav-tabs .nav-item.active .nav-link {
@@ -873,7 +872,7 @@ pre {
 }
 
 pre .copy-to-clipboard {
-  background: #FF0043;
+  background: #c7d5e0;
   color: #fff;
   cursor: pointer;
   padding: 4px 5px;
@@ -904,16 +903,16 @@ pre .copy-to-clipboard {
 }
 
 .autocomplete-suggestions .autocomplete-suggestion.selected {
-  background: #FF0043;
+  background: #c7d5e0;
 }
 
 .search-item a {
-  color: #222;
+  color: #c7d5e0;
   display: block;
 }
 
 .search-item a:hover {
-  color: #FF0043;
+  color: #c7d5e0;
 }
 
 .search-item:not(:last-child) {
@@ -937,7 +936,7 @@ pre .copy-to-clipboard {
 
 .form-group .input::-moz-placeholder {
   font-size: 13px;
-  color: #999;
+  color: #c7d5e0;
 }
 
 .form-group .input::placeholder {
@@ -947,7 +946,7 @@ pre .copy-to-clipboard {
 
 .form-group .input:focus {
   outline: 0;
-  border-color: #FF0043;
+  border-color: #c7d5e0;
   box-shadow: none;
 }
 
@@ -1024,6 +1023,7 @@ pre .copy-to-clipboard {
 .content h4,
 .content h5,
 .content h6 {
+  color: #c7d5e0;
   font-weight: 500;
 }
 
@@ -1033,7 +1033,7 @@ pre .copy-to-clipboard {
 
 .content a {
   text-decoration: underline;
-  color: #FF0043;
+  color: #c7d5e0;
 }
 
 .content ol,
@@ -1180,7 +1180,7 @@ pre .copy-to-clipboard {
 
 .content blockquote {
   font-size: 20px !important;
-  color: #222;
+  color: #c7d5e0;
   padding: 20px 40px;
   border-left: 2px solid #FF0043;
   margin: 40px 0;
@@ -1244,13 +1244,13 @@ pre .copy-to-clipboard {
 }
 
 .code-tabs .nav-tabs li a:focus {
-  border-color: #FF0043;
+  border-color: #c7d5e0;
 }
 
 .code-tabs .nav-tabs li.active a {
   color: #fff;
-  background-color: #FF0043;
-  border-color: #FF0043;
+  background-color: #c7d5e0;
+  border-color: #c7d5e0;
 }
 
 .code-tabs .tab-content {
@@ -1263,3 +1263,11 @@ pre .copy-to-clipboard {
 }
 
 /*# sourceMappingURL=style.css.map */
+
+body {
+  background-color: #2a475e;
+}
+
+.section-title {
+  color: #c7d5e0;
+}

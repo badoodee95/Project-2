@@ -40,6 +40,9 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Password must be 8 and 99 characters'
         }
       }
+    },
+    steam_id: {
+      type: DataTypes.STRING
     }
   }, {
     sequelize,

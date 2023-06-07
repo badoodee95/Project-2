@@ -6,12 +6,12 @@
             <div class="column is-3-desktop is-12-tablet">
                 <ul class="sidenav">
                     <li title="Basic Startup" class="sidelist parent active">
-                        <a href="/">Home</a>
                         <ul>
                             <% for( let i = 0; i < steam.length; i++ ) { %>
                             <% let game = steam[i]; %>
                             <li class="sidelist">
                                 <a href="/wishlist/<%= game %>"><%= game %></a>
+                                <% console.log('game!', game) %>
                                 <% } %>
                             </li>
                         </ul>
@@ -21,23 +21,15 @@
                 <div class="px-4">
                     <h2 class="mb-4 has-text-weight-medium"></h2>
                     <div class="content">
-                        <h2>Current Wishlist</h2>
-                        <ul>
+                        <h2 class="has-text-light">Current Wishlist</h2>
+                        <ul class="has-text-light">
                             <% for( let i = 0; i < steam.length; i++ ) { %>
                             <% let game = steam[i] %>
-                            <li class="sidelist">
-                                <h5><%= game %></h5>
+                            <li class="sidelist has-text-light">
+                                <h5 class="has-text-light"><%= game %></h5>
                                 <% } %>
                             </li>
-                        </ul>>
-
-                        <!-- navigation -->
-                        <nav class="pagination">
-                            <a class="nav nav-prev" href="https://examplesite.com/"><i class="ti-arrow-left mr-2"></i>
-                                <span class="d-none d-md-block">Hugo documentation theme</span></a>
-                            <a class="nav nav-next" href="https://examplesite.com/basic-startup/requirments/"> <span
-                                    class="d-none d-md-block">Requirments</span><i class="ti-arrow-right ml-2"></i></a>
-                        </nav>
+                        </ul>
                     </div>
                 </div>
             </div>
