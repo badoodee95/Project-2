@@ -15,7 +15,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await axios.get(`https://store.steampowered.com/wishlist/profiles/76561198975964527/wishlistdata/?p=0`)
+    await axios.get(`https://store.steampowered.com/wishlist/profiles/76561198388597357/wishlistdata/?p=0`)
       .then(async response => {
         let result = [];
         for (let i in response.data) {
@@ -24,7 +24,7 @@ module.exports = {
           if (game.tags) {
             newTags = Object.values(game.tags).toString().split(',').join(', ');
           }
-          let somethingDifferent = {
+          let newGame = {
             name: game.name,
             review_desc: game.review_desc,
             release_string: game.release_string,
@@ -35,7 +35,7 @@ module.exports = {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           };
-          result.push(somethingDifferent);
+          result.push(newGame);
           // console.log('Tag, you are it!', result);
           // console.log('1337 gamer', newTags);
         }
