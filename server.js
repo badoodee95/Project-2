@@ -302,8 +302,8 @@ app.post('/wishlist', isLoggedIn, function (req, res) {
   });
   axios.get(`https://store.steampowered.com/wishlist/profiles/${steamID}/wishlistdata/?p=0`)
     .then(function (response) {
-      console.log('user.steam_id', req.user.steam_id);
-      if (req.user.steam_id) {
+      console.log('user.steam_id', steamID);
+      if (steamID) {
         let result = [];
         for (let i in response.data) {
           let obj = response.data[i];
