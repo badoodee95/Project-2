@@ -209,7 +209,6 @@ app.get('/games/:id', function (req, res) {
 app.get('/wishlist/:name', function (req, res) {
   const steamWishlistURL = 'https://store.steampowered.com/wishlist/profiles/' + steamID + '/wishlistdata/?p=0';
   const dealsListURL = `https://api.isthereanydeal.com/v01/deals/list/?key=${dealApiKey}&offset=0&limit=200&region=US&country=US&shops=steam%2Cgog`;
-  const steamGameURL = 'http://store.steampowered.com/api/appdetails?appids=' + appID;
   axios.all([
     axios.get(steamWishlistURL),
     axios.get(dealsListURL),
@@ -220,13 +219,11 @@ app.get('/wishlist/:name', function (req, res) {
         let game = steamResponse.data[i];
         appID = i.toString();
         const steamGameStorePage = 'https://store.steampowered.com/app/' + appID;
-        console.log('gameid', appID); // THIS GIVES ME BACK THE APP/GAME ID DONT FORGET THIS !!!
+        console.log('gameid', appID);
         if (game.name === req.params.name) {
           found = true;
           await axios.get('http://store.steampowered.com/api/appdetails?appids=' + appID.toString())
             .then(function (steamStoreResponse) {
-              // console.log('alsdfj;alsdjf;la', steamStoreResponse.data[appID].data);
-              // console.log('?????? or some shit', steamStoreResponse.data[appID].data.price_overview);
               let initialPrice;
               let finalPrice;
               let discountPercent;
@@ -246,14 +243,8 @@ app.get('/wishlist/:name', function (req, res) {
               } else {
                 discountPercent = steamStoreResponse.data[appID].data.price_overview.discount_percent;
               }
-              // console.log('steam store data', steamStoreResponse.data);
-              // console.log('l;akfjdflajsl;kjfalksdj', steamStoreResponse.data[appID].data.price_overview);
-              // console.log('initial Price', initialPrice);
               return res.render('single-game(wishlist)', { game: steamResponse.data[i], steam: steamResponse.data, appID, deals: dealsResponse.data, initialPrice, finalPrice, discountPercent, steamGameStorePage });
             });
-          // .then(function (response) {
-          //   return res.render('single-game', { game: steamResponse.data[i], steam: steamResponse.data, appID, deals: dealsResponse.data, initialPrice, finalPrice, discountPercent, steamGameStorePage });
-          // });
         }
       }
       if (!found) {

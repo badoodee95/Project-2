@@ -4,8 +4,7 @@ Currently, this will only show up the current prices from the steam store.
 
 ## Wireframe
 
-Here is a short explanation of my wireframe image
-
+Here is a short explanation of my wireframe images
 ### Initial Idea
 ![Alt text](/wireframe-images/initial-mockup.png "Initial Website Mockup")
 
@@ -35,4 +34,5 @@ In the near future, I would like to all the ideas I had within my wireframe. Fur
 2. More api to manipulate so that I can add more websites to the page
 3. Expanding the games list page for a quick and easy access for people who may not be logged in
 4. More edit and delete routes on different parts of the website
+5. Moving routes to the controllers directory
 
