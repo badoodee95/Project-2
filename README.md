@@ -2,6 +2,8 @@
 My project is a website to check and compare steam prices.
 Currently, this will only show up the current prices from the steam store.
 
+Official Link: https://steam-price-checker.herokuapp.com/
+
 ## Wireframe
 
 Here is a short explanation of my wireframe images
